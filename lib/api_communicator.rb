@@ -3,12 +3,25 @@ require 'json'
 require 'pry'
 require 'pry'
 
-def get_character_movies_from_api(character_name)
-  #make the web request
 
-  response_string = RestClient.get('http://swapi.dev/api/people')
-  response_hash = JSON.parse(response_string)
-  
+def get_character_movies_from_api(character_name)
+    # response_string = RestClient.get('http://swapi.dev/api/people')
+    # response_hash = JSON.parse(response_string) #turns into a hash
+    
+    # get_request('http://swapi.dev/api/people')
+    # binding.pry
+    return_value = get_request('http://swapi.dev/api/people').find do |character|
+        #binding.pry
+        puts "This is working"
+        character["name"] == character_name
+    end
+    
+    films_info = return_value["films"].map do |url|
+      # response_string1 = RestClient.get(url)
+      # response_hash1 = JSON.parse(response_string1) #turns into a hash
+      # bindg.pry
+      get_request(url)
+    end
   # iterate over the response hash to find the collection of `films` for the given
   #   `character`
   # collect those film API urls, make a web request to each URL to get the info
@@ -18,10 +31,14 @@ def get_character_movies_from_api(character_name)
   # this collection will be the argument given to `print_movies`
   #  and that method will do some nice presentation stuff like puts out a list
   #  of movies by title. Have a play around with the puts with other info about a given film.
+  
 end
 
 def print_movies(films)
   # some iteration magic and puts out the movies in a nice list
+  films.each do |films|
+    puts films["title"]
+  end
 end
 
 def show_character_movies(character)
@@ -34,4 +51,7 @@ end
 # that `get_character_movies_from_api` method is probably pretty long. Does it do more than one job?
 # can you split it up into helper methods?
 
-get_character_movies_from_api()
+def get_request(url)
+  response_string = RestClient.get(url)
+  response_hash = JSON.parse(response_string)
+end
