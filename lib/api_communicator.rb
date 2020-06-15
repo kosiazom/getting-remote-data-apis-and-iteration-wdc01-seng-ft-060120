@@ -3,12 +3,19 @@ require 'json'
 require 'pry'
 
 def get_character_movies_from_api(character_name)
-  #make the web request
 
-
+  #character_info = RestClient.get('https://swapi.dev/')
   response_string = RestClient.get('http://swapi.dev/api/people')
-  response_hash = JSON.parse(response_string)
+  response_hash = JSON.parse(response_string) #turns into a hash
 
+    return_value = response_hash["results"].find do |character|
+        #binding.pry
+        puts "This is working"
+        character["name"] == character_name
+      
+    end
+     return_value["films"]
+   # binding.pry
   # iterate over the response hash to find the collection of `films` for the given
   #   `character`
   # collect those film API urls, make a web request to each URL to get the info
